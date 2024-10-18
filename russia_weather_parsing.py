@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from tkinter import *
 import math
+import pygame
 
 class Weather:
     def __init__(self, link="https://rp5.ru/Погода_в_России"):
@@ -16,6 +17,7 @@ class Weather:
             if tag.find_next("b"):
                 tag = tag.find_next("a")
                 links[tag.get_text()] = "https://rp5.ru" + tag['href']
+
         return links
 
     def parse_next(self, link):
@@ -24,7 +26,7 @@ class Weather:
         if soup.find('div', {'id': 'archiveString'}):
             data = soup.find('div', {'id': 'archiveString'})
             temp = data.find_next("span", {'class': 't_0'}).get_text()
-            print(temp)
+            # print(temp)
             return temp
         # Погоды нет
         data = soup.find("div", {"class": "countryMap"})
@@ -39,7 +41,7 @@ class Weather:
 class UI:
     def __init__(self):
         self.root = Tk()
-        self.root.title("Погода")
+        self.root.title("Погода в РОССИИ")
 
         self.upper_frame = Frame(self.root)
         self.upper_frame.grid(row=0, column=0)
@@ -51,7 +53,7 @@ class UI:
         self.lower_frame = Frame(self.root)
         self.lower_frame.grid(row=1, column=0)
 
-        home_btn = Button(self.lower_frame, text="Домой", command=self.home_button_handler)
+        home_btn = Button(self.lower_frame, text="На Родину", command=self.home_button_handler)
         home_btn.pack()
 
     def run(self):
@@ -69,7 +71,7 @@ class UI:
             button.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
 
     def button_handler(self, c):
-        print(type(c))
+        # print(type(c))
         self.upper_frame.destroy()
         self.upper_frame = Frame(self.root)
         self.upper_frame.grid(row=0, column=0)
@@ -91,11 +93,14 @@ class UI:
         self.set_buttons(one)
 
 
-
+pygame.mixer.init()
+pygame.mixer.music.load('MatushkaZ.ogg')
+pygame.mixer.music.play()
 
 
 if __name__ == '__main__':
     w = Weather()
     ui = UI()
     ui.run()
-    print(w.first_parse())
+
+    # print(w.first_parse())
